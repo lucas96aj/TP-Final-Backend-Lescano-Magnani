@@ -40,8 +40,8 @@ DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
 
 ```
 {
-        "username": "admin",
-        "password": "1234"
+	"username": "admin",
+	"password": "1234"
 }
 ```
 
@@ -83,10 +83,10 @@ DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
 
 ```
 {
-    "nombre": "Anabella",
-    "apellido": "Rodriguez",
-    "dni": "76555433",
-    "email": "rodriguez.ana@hotmail.com"
+	"nombre": "Anabella",
+	"apellido": "Rodriguez",
+	"dni": "76555433",
+	"email": "rodriguez.ana@hotmail.com"
 }
 ```
 
@@ -105,7 +105,7 @@ DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
 
 ```
 {
-        "apellido": "Perez"
+	"apellido": "Perez"
 }
 ```
 
