@@ -37,12 +37,14 @@ DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
 <li>Configurar la URL: http://localhost:3000/login</li>
 <li>Body (JSON): Seleccioná raw → JSON. Agregar el nombre y la contraseña:</li>
 </ul>
+
 ```
 {
         "username": "admin",
         "password": "1234"
 }
 ```
+
 <ul>
 <li>Se va a devolver un mensaje de autenticación exitosa y un token.</li>
 <li>En la pestaña de Authorization, seleccionar en el menú Auth Type la opción Bearer Token</li>
@@ -78,6 +80,7 @@ DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
 <li>URL: http://localhost:3000/integrantes/agregar</li>
 <li>Body (JSON): Seleccioná raw → JSON. Agregar el formato JSON con los datos del nuevo integrante:</li>
 </ul>
+
 ```
 {
     "nombre": "Anabella",
@@ -86,6 +89,7 @@ DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
     "email": "rodriguez.ana@hotmail.com"
 }
 ```
+
 <ul>
 <li>Respuesta esperada: Listado de JSON actualizado con nuevo integrante.</li>
 <li>Mensaje de error: "Faltan datos"</li>
@@ -98,11 +102,13 @@ DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
 <li>URL: http://localhost:3000/integrantes/messiento10@gmail.com</li>
 <li>Body (JSON): Seleccioná raw → JSON. ASeleccioná raw → JSON. Agregar en formato JSON:</li>
 </ul> 
+
 ```
 {
         "apellido": "Perez"
 }
 ```
+
 <ul>
 <li>Respuesta esperada: Elemento de JSON con datos del integrante actualizados (Rosario Perez)</li>
 <li>Mensaje de error: "No se encontró alumno que responda a esos datos"</li>
