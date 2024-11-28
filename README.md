@@ -12,7 +12,7 @@ POST /integrantes/agregar = Permite agregar un nuevo integrante.
 
 PUT /integrantes/:email = Actualiza el apellido de un integrante usando su email.
 
-DELETE /integrantes/:dni = Elimina un integrante del archivo JSON usando su DNI.
+DELETE /integrantes/:dni = Elimina un integrante usando su DNI.
 
 * * *
 
@@ -31,20 +31,37 @@ DELETE /integrantes/:dni = Elimina un integrante del archivo JSON usando su DNI.
 <li>Respuesta esperada: "API funcionando Ok"</li>
 </ul>
 
+### 3. Login
+<ul>
+<li>Seleccionar el método POST.</li>
+<li>Configurar la URL: http://localhost:3000/login</li>
+<li>Body (JSON): Seleccioná raw → JSON. Agregar el nombre y la contraseña:</li>
+</ul>
+{
+        "username": "admin",
+        "password": "1234"
+}
+<ul>
+<li>Se va a devolver un mensaje de autenticación exitosa y un token.</li>
+<li>En la pestaña de Authorization, seleccionar en el menú Auth Type la opción Bearer Token</li>
+<li>En la misma pestaña, copiar y pegar el token recibido en la caja de la derecha.</li>
+<li>Una vez hecho esto, ya se pueden probar los demás métodos.</li>
+</ul>
+
 * * *
 
-### 3. Pruebas de métodos
+### 4. Pruebas de métodos
 
 
-#### **3.1 - GET**
+#### **4.1 - GET**
 
-3.1.1 Llamar lista de alumno
+4.1.1 Llamar lista de alumno
 <ul>
 <li>URL: http://localhost:3000/integrantes</li>
 <li>Respuesta esperada: Lista de integrantes del equipo en formato JSON</li>
 </ul>
 
-3.1.2 Buscar alumno por DNI
+4.1.2 Buscar alumno por DNI
 <ul>
 <li>URL: http://localhost:3000/integrantes/12345678</li>
 <li>Respuesta esperada: Datos del integrante con ese DNI</li>
@@ -52,9 +69,9 @@ DELETE /integrantes/:dni = Elimina un integrante del archivo JSON usando su DNI.
 </ul>
 
   
-#### **3.2 - POST**
+#### **4.2 - POST**
 
-3.2.1 Agregar alumno
+4.2.1 Agregar alumno
 <ul>
 <li>URL: http://localhost:3000/integrantes/agregar</li>
 <li>Body (JSON): Seleccioná raw → JSON. Agregar el formato JSON con los datos del nuevo integrante:</li>
@@ -71,9 +88,9 @@ DELETE /integrantes/:dni = Elimina un integrante del archivo JSON usando su DNI.
 <li>Mensaje de error: "Faltan datos"</li>
 </ul>
        
-#### **3.3 - PUT**
+#### **4.3 - PUT**
 
-3.3.1 Actualizar apellido identificando por email
+4.3.1 Actualizar apellido identificando por email
 <ul>
 <li>URL: http://localhost:3000/integrantes/messiento10@gmail.com</li>
 <li>Body (JSON): Seleccioná raw → JSON. ASeleccioná raw → JSON. Agregar en formato JSON:</li>
@@ -88,9 +105,9 @@ DELETE /integrantes/:dni = Elimina un integrante del archivo JSON usando su DNI.
 <li>Mensaje de error: "No se encontró alumno que responda a esos datos"</li>
 </ul>
 
-#### **3.4 - DELETE**
+#### **4.4 - DELETE**
 
-3.4.1 Eliminar un integrante por DNI
+4.4.1 Eliminar un integrante por DNI
 <ul>
 <li>URL: http://localhost:3000/integrantes/76555423</li>
 <li>Respuesta esperada: Listado de JSON actualizado sin el integrante con el DNI ingresado.</li>

@@ -3,21 +3,30 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = 3000;
+const mongoose = require('mongoose');
 
 // Clave secreta para firmar tokens (cámbiala en producción)
 const SECRET_KEY = 'claveSecreta';
 
+// URI para conectarse con la bd
+const MONGO_URI = "mongodb+srv://lucas96aj:456123@cluster0.9wgyg.mongodb.net/TPFinalDB?retryWrites=true&w=majority&appName=Cluster0";
+
+mongoose.connect(MONGO_URI, {})
+.then(() => console.log('Conexión exitosa a MongoDB Atlas'))
+.catch((err) => console.error('Error al conectar a MongoDB:', err));
+
+//Modelado de datos
+const integranteSchema = new mongoose.Schema({
+    nombre: String,
+    apellido: String,
+    dni: String,
+    email: String,
+});
+
+const Integrante = mongoose.model('integrante', integranteSchema);
+
 app.use(express.json());
 
-// Funciones para leer y escribir el archivo JSON
-const readTeam = () => {
-    const data = fs.readFileSync('./integrantes.json', 'utf-8');
-    return JSON.parse(data);
-};
-
-const writeTeam = (data) => {
-    fs.writeFileSync('./integrantes.json', JSON.stringify(data, null, 2));
-};
 
 // Middleware para verificar tokens
 const verifyToken = (req, res, next) => {
@@ -43,7 +52,6 @@ app.get('/', (req, res) => {
 // Ruta de login para generar un token
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-
     //  Autenticación 
     if (username === 'admin' && password === '1234') {
         const token = jwt.sign({ user: username }, SECRET_KEY, { expiresIn: '1h' });
@@ -54,61 +62,48 @@ app.post('/login', (req, res) => {
 });
 
 // obtener integrantes (requiere token)
-app.get('/integrantes', verifyToken, (req, res) => {
-    const integrantes = readTeam();
+app.get('/integrantes', verifyToken, async (req, res) => {
+    const integrantes = await Integrante.find();
     res.json(integrantes);
 });
 
 // buscar un integrante por DNI (requiere token)
-app.get('/integrantes/:dni', verifyToken, (req, res) => {
-    const { dni } = req.params;
-    const integrantes = readTeam();
-    const integrante = integrantes.find((i) => i.dni === dni);
-
-    res.status(integrante ? 200 : 404).json(integrante || { error: 'No existe el integrante que buscó con ese DNI' });
+app.get('/integrantes/:dni', verifyToken, async (req, res) => {
+    const integrante = await Integrante.findOne({ dni: req.params.dni });
+    integrante
+        ? res.json(integrante)
+        : res.status(404).json({ error: 'No existe el integrante con ese DNI' });
 });
 
 // agregar un integrante (sin token)
-app.post('/integrantes/agregar', (req, res) => {
+app.post('/integrantes/agregar', async (req, res) => {
     const { nombre, apellido, dni, email } = req.body;
-    const integrantes = readTeam();
     if (!nombre || !apellido || !dni || !email) {
         return res.status(400).json({ error: 'Faltan datos a ingresar' });
     }
-    integrantes.push({ nombre, apellido, dni, email });
-    writeTeam(integrantes);
-    res.status(201).json(integrantes);
+    const nuevoIntegrante = new Integrante({ nombre, apellido, dni, email });
+    await nuevoIntegrante.save();
+    res.status(201).json(nuevoIntegrante);
 });
 
 // actualizar un integrante (requiere token)
-app.put('/integrantes/:email', verifyToken, (req, res) => {
-    const { email } = req.params;
+app.put('/integrantes/:email', verifyToken, async (req, res) => {
     const { apellido } = req.body;
-    const integrantes = readTeam();
-    const integrante = integrantes.find((i) => i.email === email);
-
-    if (integrante) {
-        integrante.apellido = apellido;
-        writeTeam(integrantes);
-        res.json({ message: 'Apellido actualizado', integrante });
-    } else {
-        res.status(404).json({ error: 'No se encontró al integrante con ese email' });
-    }
+    const integrante = await Integrante.findOneAndUpdate(
+        { email: req.params.email },
+        { apellido },
+        { new: true }
+    );
+    integrante
+        ? res.json({ message: 'Apellido actualizado', integrante })
+        : res.status(404).json({ error: 'No se encontró al integrante con ese email' });
 });
-
 // eliminar un integrante (requiere token)
-app.delete('/integrantes/:dni', verifyToken, (req, res) => {
-    const { dni } = req.params;
-    let integrantes = readTeam();
-    const integrante = integrantes.find((i) => i.dni === dni);
-
-    if (integrante) {
-        integrantes = integrantes.filter((i) => i.dni !== dni);
-        writeTeam(integrantes);
-        res.json(integrantes);
-    } else {
-        res.status(404).json({ error: 'No se ha encontrado al integrante' });
-    }
+app.delete('/integrantes/:dni', verifyToken, async (req, res) => {
+    const integrante = await Integrante.findOneAndDelete({ dni: req.params.dni });
+    integrante
+        ? res.json({ message: 'Integrante eliminado', integrante })
+        : res.status(404).json({ error: 'No se encontró al integrante con ese DNI' });
 });
 
 // Servidor
